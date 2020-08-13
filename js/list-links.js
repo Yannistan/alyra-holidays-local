@@ -1,123 +1,133 @@
+"use strict"
 class ListLinks {
   constructor(container, defaultList) {
     this.container = container
     this.list = JSON.parse(localStorage.getItem("listLinks")) || defaultList
   }
-
   init() {
-    this.refresh()
-  }
-
-  pushEl(el) {
-    const urls = this.list.map((el) => el.url)
-    if (!urls.includes(el.url)) {
-      this.list.push(el)
-      this.refresh()
-    }
-  }
-
-  remove(el) {
-    const index = this.list.findIndex((item) => item === el)
-    this.list.splice(index, 1)
-    this.refresh()
-  }
-
-  refresh() {
-    this.addToLocalStorage()
     this.render()
   }
 
+  pushEl(el) {
+    /* @todo : remplacer array vide [] dans const urls = [], par l'array qui contient tous les urls
+    trouvés dans this.list */
+    console.log(this.list)
+    const urls = this.list.map((el) => el.url)
+    console.log(urls)
+    if (!urls.includes(el.url)) {
+      // si el.url n'est pas dans la liste des urls
+      // je l'ajoute
+      this.list.push(el)
+      // et j'appelle la méthode refresh
+      this.refresh()
+    } else {
+      alert("Ce lien est déjà inclu")
+    }
+  }
+  remove(el) {
+    const i = this.list.findIndex((item) => item === el) // <- ce code trouve index de l'élément récherché
+    this.list.splice(i, 1) // <- ce code enleve l'élément avec index i de this.list
+    console.log(this.list)
+    this.refresh()
+  }
+  refresh() {
+    this.render()
+    this.addToLocalStorage()
+  }
   addToLocalStorage() {
+    /*
+     le code ci-dessous convertis l'array list (array qui contients des objet) en format JSON afin de la
+     sauvegarder en localStorage dans la clé "listLinks"
+    */
     localStorage.setItem("listLinks", JSON.stringify(this.list))
   }
-
   render() {
-    const ul = this.addUl()
+    const ulEl = this.addUl()
     this.container.innerHTML = ""
-    this.container.append(ul)
+    this.container.append(ulEl)
   }
 
   addUl() {
-    const ul = this.createUlElement()
+    const ulEl = this.createUlElement()
+    console.log(this.list)
     for (let el of this.list) {
       const li = this.addLi(el)
-      ul.append(li)
+      ulEl.append(li)
     }
-    return ul
-  }
-
-  createUlElement() {
-    const ul = document.createElement("ul")
-    ul.classList.add("row", "list-unstyled", "mt-4")
-    return ul
-  }
-
-  createLiElement() {
-    const li = document.createElement("li")
-    li.classList.add("border", "shadow-sm", "mb-3", "p-2")
-    return li
-  }
-
-  createBtnElement() {
-    const button = document.createElement("button")
-    button.type = "button"
-    button.classList.add("btn", "btn-warning", "btn-sm")
-    return button
-  }
-
-  createTitleElement() {
-    const h3 = document.createElement('h3')
-    h3.classList.add('h3')
-    return h3
-  }
-
-  createDescriptionElement() {
-    return document.createElement('p')
-  }
-
-  createLinkElement() {
-    const a = document.createElement('a')
-    a.classList.add('btn', 'btn-sm', 'btn-outline-warning', 'mr-2')
-    return a
+    return ulEl
   }
 
   addLi(el) {
-    const li = this.createLiElement()
-    li.append(this.addTitle(el))
-    li.append(this.addDescription(el))
-    li.append(this.addLink(el))
-    li.append(this.addButton(el))
-    return li
+    const liEl = this.createLiElement()
+    liEl.append(this.addTitle(el))
+    liEl.append(this.addDescription(el))
+    liEl.append(this.addLink(el))
+    liEl.append(this.addButton(el))
+    return liEl
   }
 
-  addTitle({ title }) {
-    const h3 = this.createTitleElement()
-    h3.textContent = title
-    return h3
+  createUlElement() {
+    const ulEl = document.createElement("ul")
+    ulEl.classList.add("row", "list-unstyled", "mt-4")
+    return ulEl
   }
 
-  addDescription({ description }) {
-    let p = ''
-    if (description) {
-      p = this.createDescriptionElement()
-      p.textContent = description
-    }
-    return p
+  createLiElement() {
+    const liEl = document.createElement("li")
+    liEl.classList.add("border", "shadow-sm", "mb-3", "p-2")
+    return liEl
   }
 
-  addLink({ url }) {
+  createTitleElement() {
+    const el = document.createElement("h3")
+    el.classList.add("h6", "mb-0")
+    return el
+  }
+
+  createDescriptionElement() {
+    const el = document.createElement("p")
+    return el
+  }
+
+  createLinkElement() {
+    const el = document.createElement("a")
+    el.classList.add("btn", "btn-sm", "btn-outline-warning", "mr-2")
+    return el
+  }
+
+  createButtonElement() {
+    // <button type="button" class="btn btn-warning btn-sm"></button>
+    const el = document.createElement("button")
+    el.type = "button"
+    el.classList.add("btn", "btn-warning", "btn-sm")
+    return el
+  }
+
+  addTitle(el) {
+    const title = this.createTitleElement()
+    title.textContent = el.title
+    return title
+  }
+
+  addDescription(el) {
+    const description = this.createDescriptionElement()
+    description.textContent = el.description
+    return description
+  }
+
+  addLink(el) {
     const a = this.createLinkElement()
-    a.href = url
-    a.textContent = 'visiter le lien'
+    a.textContent = "visiter le lien"
+    a.href = el.url
     return a
   }
 
   addButton(el) {
-    const button = this.createBtnElement()
-    button.textContent = "Supprimer le lien"
-    button.addEventListener("click", () => {
+    const buttonEl = this.createButtonElement()
+    buttonEl.textContent = "Supprimer le lien"
+    buttonEl.addEventListener("click", () => {
       this.remove(el)
     })
-    return button
+    return buttonEl
   }
 }
