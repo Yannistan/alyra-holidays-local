@@ -18,3 +18,9 @@ const defaultList = [
     category: "inspiration",
   }
 ]
+
+
+function getSelectedValue() {
+  let selectedValue = document.getElementById("inputSort").value;
+  console.log(selectedValue);
+}
