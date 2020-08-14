@@ -5,8 +5,7 @@ class ListLinks {
     this.list = JSON.parse(localStorage.getItem("listLinks")) || defaultList;
   }
   init() {
-    
-   // this.render_trie();
+    // this.render_trie();
     this.render();
   }
 
@@ -44,15 +43,14 @@ class ListLinks {
     localStorage.setItem("listLinks", JSON.stringify(this.list));
   }
   render() {
-    
     const ulEl = this.addUl();
-    
-    
+
     this.container.innerHTML = "";
     this.container.append(ulEl);
-    
+
     this.methodsortatoz();
-  /*  const selectEl = document.getElementById("trie");
+    // this.methodsortztoa();
+    /*  const selectEl = document.getElementById("trie");
     const selectedValue = selectEl.value;
     //const option = document.querySelector("option");
      selectEl.addEventListener('change', () =>{
@@ -70,39 +68,39 @@ class ListLinks {
           } */
     //this.methodsortztoa();
     //console.log(this.list);
-  });
-  this.render();
-}
+    //});
+    this.render();
+  }
 
   render_trie() {
     const selectEl = document.getElementById("trie");
     const option = document.querySelector("option");
-     selectEl.addEventListener('change', () =>{
-     if (option.value == "A-Z") {
-         this.list.sort(function (a, b) {
-             if (a.title < b.title) {
-               return -1;
-             }
-             if (a.title > b.title) {
-               return 1;
-             }
-             return 0;
-           });
-           this.render();
-          // console.log(this.list);
-     } else if (option.value == "Z-A") {
-         this.list.sort(function (b, a) {
-             if (b.title > a.title) {
-               return -1;
-             }
-             if (b.title < a.title) {
-               return 0;
-             }
-             return 0;
-           });
-           this.render();
-     }
-     })
+    selectEl.addEventListener("change", () => {
+      if (option.value == "A-Z") {
+        this.list.sort(function (a, b) {
+          if (a.title < b.title) {
+            return -1;
+          }
+          if (a.title > b.title) {
+            return 1;
+          }
+          return 0;
+        });
+        this.render();
+        // console.log(this.list);
+      } else if (option.value == "Z-A") {
+        this.list.sort(function (b, a) {
+          if (b.title > a.title) {
+            return -1;
+          }
+          if (b.title < a.title) {
+            return 0;
+          }
+          return 0;
+        });
+        this.render();
+      }
+    });
   }
 
   addUl() {
@@ -189,12 +187,21 @@ class ListLinks {
     return buttonEl;
   }
 
- filtercategorie() {
-
+  filtercategorie() {
+    const catEl = document.getElementById("trie-cat");
+    const catElval = document.getElementById("trie-cat").value;
+    const listfiltercat = this.list.filter((el) => {
+      if (catElval === "toutes") {
+        return true;
+      } else {
+        return el.category.includes(catElval);
+      }
+    });
+    this.render();
   }
 
   methodsortatoz() {
-   // console.log(this.list);
+    // console.log(this.list);
     this.list.sort(function (a, b) {
       if (a.title < b.title) {
         return -1;
@@ -204,8 +211,8 @@ class ListLinks {
       }
       return 0;
     });
-   
-   this.render();
+
+    this.render();
   }
 
   methodsortztoa() {
@@ -218,6 +225,6 @@ class ListLinks {
       }
       return 0;
     });
-   // this.render();
+    this.render();
   }
 }
